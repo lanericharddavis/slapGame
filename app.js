@@ -109,7 +109,7 @@ function getStarted() {
 function drawArena() {
   document.getElementById("arena").classList.remove("hidden")
   document.getElementById("weapons").classList.add("hidden")
-  let = arenaElement = document.getElementById("arena")
+  let arenaElement = document.getElementById("arena")
   let template = `
        <div class="col-5 card">
     <div class="row justify-content-start">
