@@ -1,3 +1,5 @@
+// Two Arrays of Objects, one that hold our Fighters, and one that holds our Weapons
+// Both have Health Totals, Atk Modifiers, and Img links
 let fighters = [
   {
     name: 'small',
@@ -43,6 +45,7 @@ let weapons = [
   },
 ]
 
+// Global Variables
 let player = {}
 let computer = {}
 let playerWeapon = {}
@@ -57,16 +60,19 @@ let computerHealth = null
 let playerHealthPercent = null
 let computerHealthPercent = null
 
+// onclick Fighter Select in "fighter" div
+// Passes a number, equal to the index of the Fighter Array that is selected
+// Includes a random function that generates the Computer Fighter
 function chooseFighter(num) {
   document.getElementById("fighters").classList.add("hidden")
   document.getElementById("weapons").classList.remove("hidden")
   player = fighters[num]
   random = Math.floor(Math.random() * fighters.length)
   computer = fighters[random]
-  // let compArray = fighters.filter
   console.log(player, computer)
 }
 
+// FAILED ATTEMPT AT REMOVING DUPLICATES (Tis my eternal shame...)
 // function randomFighter() {
 //   random = Math.floor(Math.random() * fighters.length)
 //   computer = fighters[random]
@@ -81,21 +87,25 @@ function chooseFighter(num) {
 // console.log(player, computer)
 // }
 
+// onclick Weapon Select in "weapon" div
+// Passes a number, equal to the index of the Weapon Array that is selected
+// Includes a random function that generates the Computer Weapon
 function chooseWeapon(num) {
   playerWeapon = weapons[num]
   random = Math.floor(Math.random() * weapons.length)
   computerWeapon = weapons[random]
-  // let compArray = fighters.filter
   console.log(playerWeapon, computerWeapon)
   getStarted()
 }
 
+// handles our Draw functions for our Modified Stats, dynamic Arena Layout in "arena" div, and our Fight Interval
 function getStarted() {
   drawStats()
   fightInterval()
   drawArena()
 }
 
+// Dynamically draws to the "arena" div, ${} represent object stats from our Player Fighter / Computer Fighter
 function drawArena() {
   document.getElementById("arena").classList.remove("hidden")
   document.getElementById("weapons").classList.add("hidden")
@@ -142,6 +152,7 @@ function drawArena() {
   arenaElement.innerHTML = template
 }
 
+// Modify the Player / Computer Atk based on their object "mod" values
 function drawStats() {
   playerAtk = player.atk + playerWeapon.plus
   computerAtk = computer.atk + computerWeapon.plus
@@ -151,10 +162,12 @@ function drawStats() {
   computerHealthPercent = computerHealth / computer.hp * 100
 }
 
+// RNG for 50% Atk mod effect
 function atkMod() {
   random = Math.random()
 }
 
+// Calls atkMod every Fight to determine if the "mod" condition takes effect
 function critOrMiss() {
   atkMod()
   if (random <= .5) {
@@ -174,6 +187,7 @@ function critOrMiss() {
   }
 }
 
+// Ideally, prevents the Health Bar from falling below 0...
 function ifZero() {
   if (playerHealthPercent <= 0) {
     playerHealthPercent = 0
@@ -183,6 +197,7 @@ function ifZero() {
   }
 }
 
+// Pits the Fighters against each other, modifying their "hp" values depending on opponent's "atk" and "mod" values
 function fight() {
   ifZero()
   if (playerHealth <= 0 || computerHealth <= 0) {
@@ -202,6 +217,7 @@ function fight() {
   drawArena()
 }
 
+// Determines the frequency with which our Fight() function is called
 function fightInterval() {
   fightTimer = setInterval(() => { fight() }, 1000)
 }
