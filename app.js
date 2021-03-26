@@ -141,7 +141,7 @@ function drawArena() {
     <img src=${player.img} alt="">
   </div>
 
-  <div class="col-3 card align-self-center">
+  <div class="col-3 card align-self-center text-center">
     <h2>
       ${fightStatus}
     </h2>
