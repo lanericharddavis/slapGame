@@ -2,46 +2,46 @@
 // Both have Health Totals, Atk Modifiers, and Img links
 let fighters = [
   {
-    name: 'small',
+    name: 'Ice',
     hp: 100,
     atk: 5,
     mod: 2,
-    img: "./assets/fighters/small.jpg"
+    img: "./assets/fighters/small.png"
   },
   {
-    name: 'medium',
+    name: 'Wood',
     hp: 150,
     atk: 10,
     mod: 1,
-    img: "./assets/fighters/medium.jpg"
+    img: "./assets/fighters/medium.png"
   },
   {
-    name: 'large',
+    name: 'Stone',
     hp: 200,
-    atk: 15,
+    atk: 20,
     mod: 0,
-    img: "./assets/fighters/large.jpg"
+    img: "./assets/fighters/large.png"
   },
 ]
 
 let weapons = [
   {
-    item: 'silk',
-    plus: 5,
+    name: 'Shortsword',
+    atk: 5,
     mod: 2,
-    img: "./assets/weapons/smallweapon.jpg"
+    img: "./assets/weapons/smallweapon.png"
   },
   {
-    item: 'standard',
-    plus: 10,
+    name: 'Broadsword',
+    atk: 10,
     mod: 1,
-    img: "./assets/weapons/mediumweapon.jpg"
+    img: "./assets/weapons/mediumweapon.png"
   },
   {
-    item: 'metal',
-    plus: 15,
+    name: 'Greatsword',
+    atk: 20,
     mod: 0,
-    img: "./assets/weapons/largeweapon.jpg"
+    img: "./assets/weapons/largeweapon.png"
   },
 ]
 
@@ -52,6 +52,7 @@ let playerWeapon = {}
 let computerWeapon = {}
 let random = null
 
+let fightStatus = ""
 let fightTimer = null
 let playerAtk = null
 let computerAtk = null
@@ -67,36 +68,45 @@ function chooseFighter(num) {
   document.getElementById("fighters").classList.add("hidden")
   document.getElementById("weapons").classList.remove("hidden")
   player = fighters[num]
-  random = Math.floor(Math.random() * fighters.length)
-  computer = fighters[random]
-  console.log(player, computer)
+  randomFighter()
 }
 
-// FAILED ATTEMPT AT REMOVING DUPLICATES (Tis my eternal shame...)
-// function randomFighter() {
-//   random = Math.floor(Math.random() * fighters.length)
-//   computer = fighters[random]
-//   console.log(computer, player)
-//   duplicateCheck(computer, player)
-// }
 
-// function duplicateCheck(computer, player) {
-// if (computer == player) {
-// randomFighter()
-// }
-// console.log(player, computer)
-// }
+// Created Duplicate Fighter / Weapon functions that are nested inside the Random Fighter / Weapon functions
+// They compare the names of the Fighers and their weapons to ensure they are not the same.
+function randomFighter() {
+  random = Math.floor(Math.random() * fighters.length)
+  computer = fighters[random]
+  duplicateFighter()
+}
+
+function duplicateFighter() {
+  if (computer.name == player.name) {
+    randomFighter()
+  }
+}
+
+function randomWeapon() {
+  random = Math.floor(Math.random() * weapons.length)
+  computerWeapon = weapons[random]
+  duplicateWeapon()
+}
+
+function duplicateWeapon() {
+  if (computerWeapon.name == playerWeapon.name) {
+    randomWeapon()
+  }
+}
 
 // onclick Weapon Select in "weapon" div
 // Passes a number, equal to the index of the Weapon Array that is selected
 // Includes a random function that generates the Computer Weapon
 function chooseWeapon(num) {
   playerWeapon = weapons[num]
-  random = Math.floor(Math.random() * weapons.length)
-  computerWeapon = weapons[random]
-  console.log(playerWeapon, computerWeapon)
+  randomWeapon()
   getStarted()
 }
+
 
 // handles our Draw functions for our Modified Stats, dynamic Arena Layout in "arena" div, and our Fight Interval
 function getStarted() {
@@ -111,12 +121,13 @@ function drawArena() {
   document.getElementById("weapons").classList.add("hidden")
   let arenaElement = document.getElementById("arena")
   let template = `
-       <div class="col-5 card">
+  <div class="col-4 card p-3">
     <div class="row justify-content-start">
-      <div class="col">
-        <div class="card bg-success" style="width: ${playerHealthPercent}%">
-          <h3>${playerHealth}</h3>
-        </div>
+      <div class="col-10">
+        <div class="card bg-success py-3" style="width: ${playerHealthPercent}%"></div>
+      </div>
+      <div class="col-2>
+        <h3 class="card"><strong>${playerHealth}</strong></h3>
       </div>
     </div>
     <div class="row justify-content-between">
@@ -130,12 +141,25 @@ function drawArena() {
     <img src=${player.img} alt="">
   </div>
 
-  <div class="col-5 card">
+  <div class="col-3 card align-self-center">
+    <h2>
+      ${fightStatus}
+    </h2>
+    <h3>
+      ${player.name} DEALS <br> ${playerAtk} DAMAGE!
+    </h3>
+    <h3>
+      ${computer.name} DEALS <br> ${computerAtk} DAMAGE!
+    </h3>
+  </div>
+
+  <div class="col-4 card p-3">
     <div class="row justify-content-start">
-      <div class="col">
-        <div class="card bg-success" style="width: ${computerHealthPercent}%">
-          <h3>${computerHealth}</h3>
-        </div>
+      <div class="col-10">
+        <div class="card bg-success py-3" style="width: ${computerHealthPercent}%"></div>
+      </div>
+      <div class="col-2>
+        <h3 class="card"><strong>${computerHealth}</strong></h3>
       </div>
     </div>
     <div class="row justify-content-between">
@@ -154,12 +178,12 @@ function drawArena() {
 
 // Modify the Player / Computer Atk based on their object "mod" values
 function drawStats() {
-  playerAtk = player.atk + playerWeapon.plus
-  computerAtk = computer.atk + computerWeapon.plus
+  playerAtk = player.atk + playerWeapon.atk
+  computerAtk = computer.atk + computerWeapon.atk
   playerHealth = player.hp
   computerHealth = computer.hp
-  playerHealthPercent = playerHealth / player.hp * 100
-  computerHealthPercent = computerHealth / computer.hp * 100
+  playerHealthPercent = Math.floor((playerHealth / player.hp) * 100)
+  computerHealthPercent = Math.floor((computerHealth / computer.hp) * 100)
 }
 
 // RNG for 50% Atk mod effect
@@ -170,6 +194,8 @@ function atkMod() {
 // Calls atkMod every Fight to determine if the "mod" condition takes effect
 function critOrMiss() {
   atkMod()
+  playerAtk = player.atk + playerWeapon.atk
+  computerAtk = computer.atk + computerWeapon.atk
   if (random <= .5) {
     playerAtk *= player.mod
   }
@@ -189,31 +215,35 @@ function critOrMiss() {
 
 // Ideally, prevents the Health Bar from falling below 0...
 function ifZero() {
-  if (playerHealthPercent <= 0) {
+  if (playerHealth <= 0 || playerHealthPercent <= 0) {
+    playerHealth = 0
     playerHealthPercent = 0
   }
-  if (computerHealthPercent <= 0) {
+  if (computerHealth <= 0 || computerHealthPercent <= 0) {
+    computerHealth = 0
     computerHealthPercent = 0
   }
 }
 
 // Pits the Fighters against each other, modifying their "hp" values depending on opponent's "atk" and "mod" values
 function fight() {
-  ifZero()
   if (playerHealth <= 0 || computerHealth <= 0) {
     clearInterval(fightTimer)
-    console.log("WE HAVE A WINNER")
+    if (playerHealth <= 0 && computerHealth <= 0) {
+      fightStatus = "IT'S A DRAW!"
+    } else if (playerHealth <= 0) {
+      fightStatus = `${computer.name} WINS!`
+    } else if (computerHealth <= 0) {
+      fightStatus = `${player.name} WINS!`
+    }
   } else {
     critOrMiss()
     playerHealth -= computerAtk
     computerHealth -= playerAtk
-    playerHealthPercent = playerHealth / player.hp * 100
-    computerHealthPercent = computerHealth / computer.hp * 100
-    console.log(playerAtk)
-    console.log(computerAtk)
-    playerAtk = player.atk + playerWeapon.plus
-    computerAtk = computer.atk + computerWeapon.plus
+    playerHealthPercent = Math.floor((playerHealth / player.hp) * 100)
+    computerHealthPercent = Math.floor((computerHealth / computer.hp) * 100)
   }
+  ifZero()
   drawArena()
 }
 
