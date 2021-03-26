@@ -86,6 +86,15 @@ function duplicateFighter() {
   }
 }
 
+// onclick Weapon Select in "weapon" div
+// Passes a number, equal to the index of the Weapon Array that is selected
+// Includes a random function that generates the Computer Weapon
+function chooseWeapon(num) {
+  playerWeapon = weapons[num]
+  randomWeapon()
+  getStarted()
+}
+
 function randomWeapon() {
   random = Math.floor(Math.random() * weapons.length)
   computerWeapon = weapons[random]
@@ -96,15 +105,6 @@ function duplicateWeapon() {
   if (computerWeapon.name == playerWeapon.name) {
     randomWeapon()
   }
-}
-
-// onclick Weapon Select in "weapon" div
-// Passes a number, equal to the index of the Weapon Array that is selected
-// Includes a random function that generates the Computer Weapon
-function chooseWeapon(num) {
-  playerWeapon = weapons[num]
-  randomWeapon()
-  getStarted()
 }
 
 
